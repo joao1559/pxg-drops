@@ -16,8 +16,8 @@ if (process.env.MONGODB_DNS_SERVERS || dns.getServers().every((s) => s === '127.
 
 let dbPromise = null
 function getDb() {
-  if (!process.env.MONGODB_URI) throw new Error('MONGODB_URI não definida (veja atlas-credentials.env)')
-  dbPromise ??= new MongoClient(process.env.MONGODB_URI)
+  if (!process.env.MONGO_MONGODB_URI) throw new Error('MONGO_MONGODB_URI não definida (veja atlas-credentials.env)')
+  dbPromise ??= new MongoClient(process.env.MONGO_MONGODB_URI)
     .connect()
     .then((client) => client.db(process.env.MONGODB_DB || 'pxg-drops'))
     .catch((err) => {
