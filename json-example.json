@@ -1,0 +1,430 @@
+{
+  "Drops": [
+    {
+      "Player": "Dzl Todes",
+      "Total price": 150000,
+      "Item": "Azure Shard",
+      "Count": 1,
+      "Ignored": null,
+      "Unit price": 150000
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 150000,
+      "Item": "Harlequin Shard",
+      "Count": 1,
+      "Ignored": null,
+      "Unit price": 150000
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 150000,
+      "Item": "Cerise Shard",
+      "Count": 1,
+      "Ignored": null,
+      "Unit price": 150000
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 300,
+      "Item": "Technological Crystal (Tier: 7)",
+      "Count": 3,
+      "Ignored": null,
+      "Unit price": 100
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 400,
+      "Item": "Technological Crystal (Tier: 8)",
+      "Count": 4,
+      "Ignored": null,
+      "Unit price": 100
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 2400,
+      "Item": "Green medicinal leaf",
+      "Count": 24,
+      "Ignored": null,
+      "Unit price": 100
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 2000,
+      "Item": "Yellow medicinal leaf",
+      "Count": 20,
+      "Ignored": null,
+      "Unit price": 100
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 280000,
+      "Item": "Rough Gemstone",
+      "Count": 56,
+      "Ignored": null,
+      "Unit price": 5000
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 160000,
+      "Item": "Star dust",
+      "Count": 16,
+      "Ignored": null,
+      "Unit price": 10000
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 1000000,
+      "Item": "giant bulb",
+      "Count": 1,
+      "Ignored": null,
+      "Unit price": 1000000
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 0,
+      "Item": "Echo Shard",
+      "Count": 36,
+      "Ignored": null,
+      "Unit price": 0
+    }
+  ],
+  "Experience": [
+    {
+      "Player": "Dzl Todes",
+      "Experience": 4500000
+    }
+  ],
+  "Session": {
+    "Damage dealt per second": 3509,
+    "Status": "Active",
+    "Damage dealt": 6738841,
+    "Profit per hour": 3516187,
+    "Profit": 1875300,
+    "Duration seconds": 1920,
+    "Duration": "00:32:00",
+    "Kills": 0,
+    "Experience": 4500000,
+    "Rare kills per hour": 0,
+    "Rare kills": 0,
+    "Time to next level": "01:31:14",
+    "Start": "2026-10-29 10:12:03",
+    "Kills per hour": null,
+    "Raw gains per hour": 3553312,
+    "Time to next level seconds": 5474,
+    "Raw gains": 1895100,
+    "Damage taken per second": 600,
+    "Session type": "player",
+    "Experience per hour": 8437500,
+    "Supplies per hour": 37125,
+    "Damage taken": 1152994,
+    "Session ID": 201,
+    "Paused seconds": 0,
+    "Supplies": 19800
+  },
+  "Damage": [
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Alolan Grimer",
+      "Element": "Melee",
+      "Damage taken": 2350,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Alolan Grimer",
+      "Element": "Poison",
+      "Damage taken": 17082,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Alolan Grimer",
+      "Element": "Ground",
+      "Damage taken": 19779,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Nightmare Grimer",
+      "Element": "Melee",
+      "Damage taken": 5604,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Nightmare Grimer",
+      "Element": "Poison",
+      "Damage taken": 90372,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Nightmare Terror Root",
+      "Element": "Poison",
+      "Damage taken": 0,
+      "Damage dealt": 71358
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Nightmare Terror Venusaur",
+      "Element": "Melee",
+      "Damage taken": 30055,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Nightmare Terror Venusaur",
+      "Element": "Normal",
+      "Damage taken": 6717,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Nightmare Terror Venusaur",
+      "Element": "Grass",
+      "Damage taken": 165347,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Nightmare Terror Venusaur",
+      "Element": "Neutral",
+      "Damage taken": 36000,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Nightmare Torterra",
+      "Element": "Melee",
+      "Damage taken": 5265,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Nightmare Torterra",
+      "Element": "Grass",
+      "Damage taken": 64119,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Petilil",
+      "Element": "Melee",
+      "Damage taken": 5518,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Petilil",
+      "Element": "Grass",
+      "Damage taken": 52016,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Petilil",
+      "Element": "Neutral",
+      "Damage taken": 10000,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Terror Alakazam",
+      "Element": "Melee",
+      "Damage taken": 0,
+      "Damage dealt": 18848
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Terror Alakazam",
+      "Element": "Psychic",
+      "Damage taken": 78784,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Terror Alakazam",
+      "Element": "Ghost",
+      "Damage taken": 0,
+      "Damage dealt": 679377
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Terror Alakazam",
+      "Element": "Dark",
+      "Damage taken": 0,
+      "Damage dealt": 831267
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Terror Blastoise",
+      "Element": "Melee",
+      "Damage taken": 0,
+      "Damage dealt": 6216
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Terror Blastoise",
+      "Element": "Water",
+      "Damage taken": 119584,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Terror Blastoise",
+      "Element": "Grass",
+      "Damage taken": 0,
+      "Damage dealt": 1372985
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Terror Gengar",
+      "Element": "Melee",
+      "Damage taken": 0,
+      "Damage dealt": 15717
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Terror Gengar",
+      "Element": "Ghost",
+      "Damage taken": 244496,
+      "Damage dealt": 749879
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Terror Gengar",
+      "Element": "Dark",
+      "Damage taken": 0,
+      "Damage dealt": 895228
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Terror Venusaur",
+      "Element": "Melee",
+      "Damage taken": 0,
+      "Damage dealt": 309129
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Terror Venusaur",
+      "Element": "Grass",
+      "Damage taken": 199906,
+      "Damage dealt": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Enemy": "Terror Venusaur",
+      "Element": "Poison",
+      "Damage taken": 0,
+      "Damage dealt": 1788837
+    }
+  ],
+  "Enemies Defeated": {},
+  "Supplies": [
+    {
+      "Player": "Dzl Todes",
+      "Total price": 0,
+      "Item": "Healing Elixir",
+      "Count": 1,
+      "Ignored": null,
+      "Unit price": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 0,
+      "Item": "Shielder's Elixir",
+      "Count": 1,
+      "Ignored": null,
+      "Unit price": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 0,
+      "Item": "Running Elixir",
+      "Count": 1,
+      "Ignored": null,
+      "Unit price": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 0,
+      "Item": "Nightmare token",
+      "Count": 11,
+      "Ignored": null,
+      "Unit price": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 1980,
+      "Item": "Ultimate Nightmare Spray",
+      "Count": 2,
+      "Ignored": null,
+      "Unit price": 990
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 0,
+      "Item": "Red Sitrus berry",
+      "Count": 1,
+      "Ignored": null,
+      "Unit price": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 17820,
+      "Item": "Ultimate Nightmare Potion",
+      "Count": 12,
+      "Ignored": null,
+      "Unit price": 1485
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 0,
+      "Item": "chopped Lum berry",
+      "Count": 3,
+      "Ignored": null,
+      "Unit price": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 0,
+      "Item": "chopped Kasib berry",
+      "Count": 1,
+      "Ignored": null,
+      "Unit price": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 0,
+      "Item": "chopped Payapa berry",
+      "Count": 1,
+      "Ignored": null,
+      "Unit price": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 0,
+      "Item": "chopped Rindo berry",
+      "Count": 1,
+      "Ignored": null,
+      "Unit price": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 0,
+      "Item": "chopped Passho berry",
+      "Count": 1,
+      "Ignored": null,
+      "Unit price": 0
+    },
+    {
+      "Player": "Dzl Todes",
+      "Total price": 0,
+      "Item": "chopped Salac berry",
+      "Count": 2,
+      "Ignored": null,
+      "Unit price": 0
+    }
+  ]
+}
