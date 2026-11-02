@@ -7,6 +7,7 @@ import HuntDetail from './pages/HuntDetail.jsx'
 import Items from './pages/Items.jsx'
 import ImportHunt from './pages/ImportHunt.jsx'
 import Characters from './pages/Characters.jsx'
+import Supplies from './pages/Supplies.jsx'
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="hunts/:id" element={<HuntDetail />} />
         <Route path="hunts/:id/edit" element={<HuntForm />} />
         <Route path="items" element={<Items />} />
+        <Route path="supplies" element={<Supplies />} />
         <Route path="characters" element={<Characters />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

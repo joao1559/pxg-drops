@@ -79,6 +79,14 @@ function collectNewItems(drops, existingItems) {
     .map((d) => ({ id: d.itemId, name: d.name, category: '', npcPrice: d.unitPrice ?? 0, marketPrice: 0 }))
 }
 
+// Supplies que ainda não existem no catálogo de supplies, com o preço informado pelo analyser.
+function collectNewSupplies(supplies, existingSupplies) {
+  const known = new Set(existingSupplies.map((i) => i.id))
+  return supplies
+    .filter((e) => !known.has(e.itemId))
+    .map((e) => ({ id: e.itemId, name: e.name, price: e.unitPrice ?? 0 }))
+}
+
 // ---------------------------------------------------------------------------
 // Formato do Hunt Analyser do PXG
 // ---------------------------------------------------------------------------
@@ -93,7 +101,7 @@ function parsePxgEntries(list) {
     .map((e) => ({ name: e.Item, qty: toNumber(e.Count), unitPrice: toNumber(e['Unit price']) }))
 }
 
-function parsePxg(data, existingItems) {
+function parsePxg(data, existingItems, existingSupplies) {
   const s = data.Session
   const warnings = []
 
@@ -151,6 +159,7 @@ function parsePxg(data, existingItems) {
       notes: '',
     },
     newItems: collectNewItems(drops, existingItems),
+    newSupplies: collectNewSupplies(supplies, existingSupplies),
     warnings,
   }
 }
@@ -205,7 +214,7 @@ function parseEntries(v) {
   return []
 }
 
-function parseGeneric(data, existingItems) {
+function parseGeneric(data, existingItems, existingSupplies) {
   if (data && !Array.isArray(data)) data = data.hunt ?? data.analyser ?? data.data ?? data
   const warnings = []
 
@@ -245,18 +254,24 @@ function parseGeneric(data, existingItems) {
       notes: String(pick(data, ALIASES.notes) ?? ''),
     },
     newItems: collectNewItems(drops, existingItems),
+    newSupplies: collectNewSupplies(supplies, existingSupplies),
     warnings,
   }
 }
 
 /**
- * @returns {{ hunt: object, newItems: object[], warnings: string[] }}
+ * @returns {{ hunt: object, newItems: object[], newSupplies: object[], warnings: string[] }}
  */
-export function parseHuntJson(text, existingItems) {
+export function parseHuntJson(text, existingItems, existingSupplies = []) {
   const data = parseJson(text)
-  const result = isPxgAnalyser(data) ? parsePxg(data, existingItems) : parseGeneric(data, existingItems)
+  const result = isPxgAnalyser(data)
+    ? parsePxg(data, existingItems, existingSupplies)
+    : parseGeneric(data, existingItems, existingSupplies)
   if (result.newItems.length) {
     result.warnings.push(`${result.newItems.length} item(ns) novo(s) serão cadastrados no catálogo.`)
+  }
+  if (result.newSupplies.length) {
+    result.warnings.push(`${result.newSupplies.length} supply(s) novo(s) serão cadastrados no catálogo de supplies.`)
   }
   return result
 }

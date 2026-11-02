@@ -6,7 +6,7 @@ import { seedItems } from '../src/data/seedItems.js'
 // API de persistência no MongoDB.
 // Cada coleção guarda os documentos com _id = id usado no front.
 
-const COLLECTIONS = ['items', 'hunts', 'characters']
+const COLLECTIONS = ['items', 'supplies', 'hunts', 'characters']
 
 // No Windows o Node às vezes não lê o DNS do sistema e usa só 127.0.0.1, o que quebra
 // a busca SRV do "mongodb+srv://". Nesse caso usa DNS públicos (ou MONGODB_DNS_SERVERS).
@@ -31,10 +31,15 @@ const toDoc = (obj) => ({ ...obj, _id: obj.id })
 const fromDoc = ({ _id, ...rest }) => ({ ...rest, id: _id })
 
 async function readAll(db) {
-  const [items, hunts, characters] = await Promise.all(
+  const [items, supplies, hunts, characters] = await Promise.all(
     COLLECTIONS.map((name) => db.collection(name).find().toArray()),
   )
-  return { items: items.map(fromDoc), hunts: hunts.map(fromDoc), characters: characters.map(fromDoc) }
+  return {
+    items: items.map(fromDoc),
+    supplies: supplies.map(fromDoc),
+    hunts: hunts.map(fromDoc),
+    characters: characters.map(fromDoc),
+  }
 }
 
 async function replaceAll(db, data) {
@@ -77,11 +82,14 @@ for (const name of COLLECTIONS) {
   })
 }
 
-api.delete('/items/:id', async (req, res) => {
-  const db = await getDb()
-  await db.collection('items').deleteOne({ _id: req.params.id })
-  res.status(204).end()
-})
+// Itens e supplies: exclusão simples
+for (const name of ['items', 'supplies']) {
+  api.delete(`/${name}/:id`, async (req, res) => {
+    const db = await getDb()
+    await db.collection(name).deleteOne({ _id: req.params.id })
+    res.status(204).end()
+  })
+}
 
 api.delete('/hunts/:id', async (req, res) => {
   const db = await getDb()

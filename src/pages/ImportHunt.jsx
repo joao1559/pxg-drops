@@ -10,7 +10,7 @@ import EXAMPLE from '../../json-example.json?raw'
 
 export default function ImportHunt() {
   const navigate = useNavigate()
-  const { items, hunts, characters, saveItem, saveHunt, saveCharacter, dropPrice } = useData()
+  const { items, supplies, hunts, characters, saveItem, saveSupply, saveHunt, saveCharacter, dropPrice, suppliesTotal } = useData()
   const [text, setText] = useState('')
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
@@ -24,7 +24,7 @@ export default function ImportHunt() {
   const analyse = (json = text) => {
     setError('')
     try {
-      const r = parseHuntJson(json, items)
+      const r = parseHuntJson(json, items, supplies)
       setResult(r)
       setLocation(r.hunt.location)
       setNotes(r.hunt.notes)
@@ -52,12 +52,15 @@ export default function ImportHunt() {
   const priceOf = dropPrice
 
   const loot = h ? h.drops.reduce((s, d) => s + d.qty * priceOf(d), 0) : 0
-  const profit = loot - (h?.expenses ?? 0)
+  // supplies novos ainda não estão no catálogo: suppliesTotal usa o preço do analyser para eles
+  const expenses = h ? (h.supplies.length ? suppliesTotal(h.supplies) : h.expenses) : 0
+  const profit = loot - expenses
   const hours = (h?.durationMin ?? 0) / 60
 
   const onSave = (e) => {
     e.preventDefault()
     result.newItems.forEach(saveItem)
+    result.newSupplies.forEach(saveSupply)
     const id = saveHunt({ ...h, location: location.trim(), notes, characterId: characterId || null })
     navigate(`/hunts/${id}`)
   }
@@ -137,7 +140,7 @@ export default function ImportHunt() {
 
           <section className="stats">
             <StatCard label="Loot" value={formatMoney(loot)} />
-            <StatCard label="Supplies" value={formatMoney(h.expenses)} />
+            <StatCard label="Supplies" value={formatMoney(expenses)} />
             <StatCard label="Lucro" value={formatMoney(profit)} tone={profit >= 0 ? 'pos' : 'neg'} />
             <StatCard label="Lucro/h" value={formatMoney(hours ? profit / hours : 0)} />
             {h.exp > 0 && <StatCard label="EXP" value={h.exp.toLocaleString('pt-BR')} />}
@@ -145,7 +148,7 @@ export default function ImportHunt() {
           </section>
           {h.reportedProfit !== null && h.reportedProfit !== profit && (
             <p className="muted small">
-              Lucro informado pelo analyser: {formatMoney(h.reportedProfit)} (diferença vem de preços do catálogo usados em itens sem preço).
+              Lucro informado pelo analyser: {formatMoney(h.reportedProfit)} (a diferença vem dos preços do catálogo: drops sem preço e supplies com preço ajustado).
             </p>
           )}
 
@@ -174,7 +177,7 @@ export default function ImportHunt() {
           <div className="grid-2 even">
             <section className="card">
               <h2>Supplies</h2>
-              <SuppliesTable supplies={h.supplies} />
+              <SuppliesTable supplies={h.supplies} newIds={result.newSupplies.map((n) => n.id)} />
             </section>
             <section className="card">
               <h2>{h.kills.length ? 'Abates' : 'Inimigos'}</h2>

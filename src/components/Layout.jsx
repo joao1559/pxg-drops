@@ -7,6 +7,7 @@ const links = [
   { to: '/hunts', label: 'Hunts', end: true },
   { to: '/characters', label: 'Personagens' },
   { to: '/items', label: 'Itens & Preços' },
+  { to: '/supplies', label: 'Supplies & Preços' },
 ]
 
 export default function Layout() {

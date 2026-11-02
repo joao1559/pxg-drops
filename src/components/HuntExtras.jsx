@@ -1,10 +1,13 @@
+import { useData } from '../context/DataContext.jsx'
 import { formatMoney } from '../utils/format.js'
 
 const nf = new Intl.NumberFormat('pt-BR')
 
-export function SuppliesTable({ supplies }) {
+// newIds: supplies que ainda serão cadastrados no catálogo (prévia da importação)
+export function SuppliesTable({ supplies, newIds = [] }) {
+  const { supplies: catalog, supplyPrice, suppliesTotal } = useData()
   if (!supplies?.length) return <p className="muted">Nenhum supply registrado.</p>
-  const total = supplies.reduce((s, e) => s + e.qty * (e.unitPrice ?? 0), 0)
+  const nameOf = (e) => catalog.find((i) => i.id === e.itemId)?.name ?? e.name ?? e.itemId
   return (
     <table className="table">
       <thead>
@@ -13,15 +16,18 @@ export function SuppliesTable({ supplies }) {
       <tbody>
         {supplies.map((e) => (
           <tr key={e.itemId}>
-            <td>{e.name}</td>
+            <td>
+              {nameOf(e)}
+              {newIds.includes(e.itemId) && <span className="tag">novo</span>}
+            </td>
             <td className="num">{e.qty}</td>
-            <td className="num">{formatMoney(e.unitPrice)}</td>
-            <td className="num">{formatMoney(e.qty * (e.unitPrice ?? 0))}</td>
+            <td className="num">{formatMoney(supplyPrice(e))}</td>
+            <td className="num">{formatMoney(e.qty * supplyPrice(e))}</td>
           </tr>
         ))}
       </tbody>
       <tfoot>
-        <tr><td colSpan={3}>Total</td><td className="num">{formatMoney(total)}</td></tr>
+        <tr><td colSpan={3}>Total</td><td className="num">{formatMoney(suppliesTotal(supplies))}</td></tr>
       </tfoot>
     </table>
   )

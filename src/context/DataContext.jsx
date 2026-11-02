@@ -8,7 +8,24 @@ const DataContext = createContext(null)
 
 // Garante os campos que versões antigas do backup/storage não tinham
 function normalize(state) {
-  return { items: [], hunts: [], characters: [], ...state }
+  return { items: [], supplies: [], hunts: [], characters: [], ...state }
+}
+
+const fromServer = (data) =>
+  normalize({ items: data.items, supplies: data.supplies, hunts: sortHunts(data.hunts), characters: data.characters })
+
+// Supplies usados em hunts antigas (de antes do catálogo) que ainda não estão no catálogo
+function missingSupplies(hunts, catalog) {
+  const known = new Set(catalog.map((s) => s.id))
+  const missing = new Map()
+  for (const h of hunts) {
+    for (const e of h.supplies ?? []) {
+      if (!known.has(e.itemId) && !missing.has(e.itemId)) {
+        missing.set(e.itemId, { id: e.itemId, name: e.name ?? e.itemId, price: Number(e.unitPrice) || 0 })
+      }
+    }
+  }
+  return [...missing.values()]
 }
 
 function readLegacy() {
@@ -59,7 +76,10 @@ export function DataProvider({ children }) {
     initialLoad ??= fetchInitial()
     initialLoad
       .then((data) => {
-        setState(normalize({ items: data.items, hunts: sortHunts(data.hunts), characters: data.characters }))
+        const loaded = fromServer(data)
+        const missing = missingSupplies(loaded.hunts, loaded.supplies)
+        missing.forEach((s) => api.save('supplies', s).catch((err) => setSyncError(err.message)))
+        setState({ ...loaded, supplies: [...loaded.supplies, ...missing] })
         setStatus('ready')
       })
       .catch((err) => {
@@ -91,6 +111,23 @@ export function DataProvider({ children }) {
   const deleteItem = useCallback((id) => {
     setState((s) => ({ ...s, items: s.items.filter((i) => i.id !== id) }))
     persist(`items:${id}`, () => api.remove('items', id))
+  }, [persist])
+
+  // ---- Supplies (catálogo de preços dos gastos) ----
+  const saveSupply = useCallback((supply) => {
+    setState((s) => {
+      const exists = s.supplies.some((i) => i.id === supply.id)
+      return {
+        ...s,
+        supplies: exists ? s.supplies.map((i) => (i.id === supply.id ? supply : i)) : [...s.supplies, supply],
+      }
+    })
+    persist(`supplies:${supply.id}`, () => api.save('supplies', supply))
+  }, [persist])
+
+  const deleteSupply = useCallback((id) => {
+    setState((s) => ({ ...s, supplies: s.supplies.filter((i) => i.id !== id) }))
+    persist(`supplies:${id}`, () => api.remove('supplies', id))
   }, [persist])
 
   // ---- Hunts ----
@@ -159,15 +196,30 @@ export function DataProvider({ children }) {
     [itemPrice],
   )
 
+  // Preço de um supply: o do catálogo (ajustável na tela Supplies); sem cadastro, o registrado na hunt
+  const supplyPrice = useCallback(
+    (entry) => {
+      const supply = state.supplies.find((i) => i.id === entry.itemId)
+      return Number(supply ? supply.price : entry.unitPrice) || 0
+    },
+    [state.supplies],
+  )
+
+  const suppliesTotal = useCallback(
+    (supplies) => (supplies ?? []).reduce((sum, e) => sum + e.qty * supplyPrice(e), 0),
+    [supplyPrice],
+  )
+
   const huntSummary = useCallback(
     (hunt) => {
       const loot = hunt.drops.reduce((sum, d) => sum + d.qty * dropPrice(d), 0)
-      const expenses = Number(hunt.expenses) || 0
+      // com supplies registrados os gastos vêm deles; senão, do valor digitado na hunt
+      const expenses = hunt.supplies?.length ? suppliesTotal(hunt.supplies) : Number(hunt.expenses) || 0
       const profit = loot - expenses
       const hours = (Number(hunt.durationMin) || 0) / 60
       return { loot, expenses, profit, profitPerHour: hours ? profit / hours : 0 }
     },
-    [dropPrice],
+    [dropPrice, suppliesTotal],
   )
 
   const exportData = useCallback(() => JSON.stringify(state, null, 2), [state])
@@ -179,7 +231,7 @@ export function DataProvider({ children }) {
       throw new Error('Arquivo inválido')
     }
     const data = await api.importAll(normalize(parsed))
-    setState(normalize({ items: data.items, hunts: sortHunts(data.hunts), characters: data.characters }))
+    setState(fromServer(data))
   }, [])
 
   const clearSyncError = useCallback(() => setSyncError(''), [])
@@ -187,10 +239,13 @@ export function DataProvider({ children }) {
   const value = useMemo(
     () => ({
       items: state.items,
+      supplies: state.supplies,
       hunts: state.hunts,
       characters: state.characters,
       saveItem,
       deleteItem,
+      saveSupply,
+      deleteSupply,
       saveHunt,
       deleteHunt,
       saveCharacter,
@@ -198,6 +253,8 @@ export function DataProvider({ children }) {
       characterName,
       itemPrice,
       dropPrice,
+      supplyPrice,
+      suppliesTotal,
       huntSummary,
       exportData,
       importData,
@@ -205,8 +262,8 @@ export function DataProvider({ children }) {
       clearSyncError,
     }),
     [
-      state, saveItem, deleteItem, saveHunt, deleteHunt, saveCharacter, deleteCharacter, characterName,
-      itemPrice, dropPrice, huntSummary, exportData, importData, syncError, clearSyncError,
+      state, saveItem, deleteItem, saveSupply, deleteSupply, saveHunt, deleteHunt, saveCharacter, deleteCharacter, characterName,
+      itemPrice, dropPrice, supplyPrice, suppliesTotal, huntSummary, exportData, importData, syncError, clearSyncError,
     ],
   )
 

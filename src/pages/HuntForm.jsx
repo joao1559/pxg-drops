@@ -14,38 +14,52 @@ const emptyHunt = () => ({
   durationMin: 60,
   expenses: 0,
   drops: [],
+  supplies: [],
   notes: '',
 })
 
 export default function HuntForm() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { hunts, items, saveHunt, dropPrice } = useData()
+  const { hunts, items, supplies, saveHunt, dropPrice, supplyPrice, suppliesTotal } = useData()
   const existing = id ? hunts.find((h) => h.id === id) : null
 
-  const [hunt, setHunt] = useState(() => existing ?? emptyHunt())
+  const [hunt, setHunt] = useState(() => ({ supplies: [], ...(existing ?? emptyHunt()) }))
   const [dropItem, setDropItem] = useState(items[0]?.id ?? '')
   const [dropQty, setDropQty] = useState(1)
+  const [supplyItem, setSupplyItem] = useState(supplies[0]?.id ?? '')
+  const [supplyQty, setSupplyQty] = useState(1)
 
   if (id && !existing) return <p>Hunt não encontrada.</p>
 
   const set = (field) => (e) => setHunt((h) => ({ ...h, [field]: e.target.value }))
 
-  const addDrop = () => {
-    const qty = Number(dropQty)
-    if (!dropItem || qty <= 0) return
+  // Soma a quantidade se o item já estiver na lista (drops ou supplies)
+  const addEntry = (list, itemId, rawQty, extra = {}) => {
+    const qty = Number(rawQty)
+    if (!itemId || qty <= 0) return false
     setHunt((h) => {
-      const found = h.drops.find((d) => d.itemId === dropItem)
-      const drops = found
-        ? h.drops.map((d) => (d.itemId === dropItem ? { ...d, qty: d.qty + qty } : d))
-        : [...h.drops, { itemId: dropItem, qty }]
-      return { ...h, drops }
+      const found = h[list].find((d) => d.itemId === itemId)
+      const entries = found
+        ? h[list].map((d) => (d.itemId === itemId ? { ...d, qty: d.qty + qty } : d))
+        : [...h[list], { itemId, qty, ...extra }]
+      return { ...h, [list]: entries }
     })
-    setDropQty(1)
+    return true
   }
 
-  const removeDrop = (itemId) =>
-    setHunt((h) => ({ ...h, drops: h.drops.filter((d) => d.itemId !== itemId) }))
+  const removeEntry = (list, itemId) =>
+    setHunt((h) => ({ ...h, [list]: h[list].filter((d) => d.itemId !== itemId) }))
+
+  const addDrop = () => {
+    if (addEntry('drops', dropItem, dropQty)) setDropQty(1)
+  }
+  const removeDrop = (itemId) => removeEntry('drops', itemId)
+
+  const addSupply = () => {
+    const name = supplies.find((i) => i.id === supplyItem)?.name
+    if (addEntry('supplies', supplyItem, supplyQty, { name })) setSupplyQty(1)
+  }
 
   const onSubmit = (e) => {
     e.preventDefault()
@@ -59,6 +73,7 @@ export default function HuntForm() {
   }
 
   const lootTotal = hunt.drops.reduce((s, d) => s + d.qty * dropPrice(d), 0)
+  const hasSupplies = hunt.supplies.length > 0
 
   return (
     <>
@@ -88,10 +103,17 @@ export default function HuntForm() {
             Duração (min)
             <input className="input" type="number" min="0" value={hunt.durationMin} onChange={set('durationMin')} />
           </label>
-          <label>
-            Gastos (potions, revives...)
-            <input className="input" type="number" min="0" value={hunt.expenses} onChange={set('expenses')} />
-          </label>
+          {hasSupplies ? (
+            <label>
+              Gastos (calculado dos supplies)
+              <span className="value">{formatMoney(suppliesTotal(hunt.supplies))}</span>
+            </label>
+          ) : (
+            <label>
+              Gastos (sem supplies detalhados)
+              <input className="input" type="number" min="0" value={hunt.expenses} onChange={set('expenses')} />
+            </label>
+          )}
         </div>
 
         <h2>Drops</h2>
@@ -133,6 +155,55 @@ export default function HuntForm() {
               <tr>
                 <td colSpan={3}>Loot total</td>
                 <td className="num">{formatMoney(lootTotal)}</td>
+                <td />
+              </tr>
+            </tfoot>
+          </table>
+        )}
+
+        <h2>Supplies</h2>
+        {supplies.length ? (
+          <div className="row">
+            <select className="input" value={supplyItem} onChange={(e) => setSupplyItem(e.target.value)}>
+              {[...supplies].sort((a, b) => a.name.localeCompare(b.name)).map((i) => (
+                <option key={i.id} value={i.id}>{i.name}</option>
+              ))}
+            </select>
+            <input className="input qty" type="number" min="1" value={supplyQty} onChange={(e) => setSupplyQty(e.target.value)} />
+            <button type="button" className="btn" onClick={addSupply}>Adicionar</button>
+          </div>
+        ) : (
+          <p className="muted small">Cadastre supplies na tela Supplies para detalhar os gastos.</p>
+        )}
+
+        {hasSupplies && (
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Supply</th>
+                <th className="num">Qtd</th>
+                <th className="num">Preço un.</th>
+                <th className="num">Total</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {hunt.supplies.map((e) => (
+                <tr key={e.itemId}>
+                  <td>{supplies.find((i) => i.id === e.itemId)?.name ?? e.name ?? e.itemId}</td>
+                  <td className="num">{e.qty}</td>
+                  <td className="num">{formatMoney(supplyPrice(e))}</td>
+                  <td className="num">{formatMoney(e.qty * supplyPrice(e))}</td>
+                  <td className="num">
+                    <button type="button" className="btn small danger" onClick={() => removeEntry('supplies', e.itemId)}>×</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan={3}>Gastos total</td>
+                <td className="num">{formatMoney(suppliesTotal(hunt.supplies))}</td>
                 <td />
               </tr>
             </tfoot>
