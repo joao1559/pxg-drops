@@ -92,11 +92,21 @@ function collectNewSupplies(supplies, existingSupplies) {
 // ---------------------------------------------------------------------------
 
 function isPxgAnalyser(data) {
-  return data && typeof data === 'object' && data.Session && Array.isArray(data.Drops)
+  return data && typeof data === 'object' && data.Session && data.Drops && typeof data.Drops === 'object'
+}
+
+// O analyser às vezes exporta uma seção vazia como {} em vez de [].
+// Também aceita objeto { "Item": 10 } ou { "Item": { Count, "Unit price" } }.
+function asList(v) {
+  if (Array.isArray(v)) return v
+  if (!v || typeof v !== 'object') return []
+  return Object.entries(v).map(([name, val]) =>
+    val && typeof val === 'object' ? { Item: name, ...val } : { Item: name, Count: val },
+  )
 }
 
 function parsePxgEntries(list) {
-  return (list ?? [])
+  return asList(list)
     .filter((e) => !e.Ignored)
     .map((e) => ({ name: e.Item, qty: toNumber(e.Count), unitPrice: toNumber(e['Unit price']) }))
 }
@@ -115,7 +125,7 @@ function parsePxg(data, existingItems, existingSupplies) {
     : Object.entries(defeated).map(([name, v]) => ({ name, qty: toNumber(typeof v === 'object' ? v.Count : v) }))
 
   const enemyMap = new Map()
-  for (const d of data.Damage ?? []) {
+  for (const d of asList(data.Damage)) {
     const cur = enemyMap.get(d.Enemy) ?? { name: d.Enemy, dealt: 0, taken: 0 }
     cur.dealt += toNumber(d['Damage dealt'])
     cur.taken += toNumber(d['Damage taken'])
@@ -123,7 +133,7 @@ function parsePxg(data, existingItems, existingSupplies) {
   }
   const enemies = [...enemyMap.values()].sort((a, b) => b.dealt - a.dealt)
 
-  const players = [...new Set([...(data.Drops ?? []), ...(data.Experience ?? [])].map((e) => e.Player).filter(Boolean))]
+  const players = [...new Set([...asList(data.Drops), ...asList(data.Experience)].map((e) => e.Player).filter(Boolean))]
 
   const supplyTotal = supplies.reduce((sum, e) => sum + e.qty * (e.unitPrice ?? 0), 0)
   const expenses = s.Supplies !== undefined ? toNumber(s.Supplies) : supplyTotal
