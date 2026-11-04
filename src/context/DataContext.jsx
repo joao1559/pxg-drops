@@ -214,10 +214,13 @@ export function DataProvider({ children }) {
     (hunt) => {
       const loot = hunt.drops.reduce((sum, d) => sum + d.qty * dropPrice(d), 0)
       // com supplies registrados os gastos vêm deles; senão, do valor digitado na hunt
-      const expenses = hunt.supplies?.length ? suppliesTotal(hunt.supplies) : Number(hunt.expenses) || 0
+      const suppliesCost = hunt.supplies?.length ? suppliesTotal(hunt.supplies) : Number(hunt.expenses) || 0
+      // gastos extras digitados no registro (taxas, compras fora do analyser...)
+      const extraExpenses = Number(hunt.extraExpenses) || 0
+      const expenses = suppliesCost + extraExpenses
       const profit = loot - expenses
       const hours = (Number(hunt.durationMin) || 0) / 60
-      return { loot, expenses, profit, profitPerHour: hours ? profit / hours : 0 }
+      return { loot, suppliesCost, extraExpenses, expenses, profit, profitPerHour: hours ? profit / hours : 0 }
     },
     [dropPrice, suppliesTotal],
   )

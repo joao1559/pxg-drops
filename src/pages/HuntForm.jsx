@@ -13,6 +13,7 @@ const emptyHunt = () => ({
   pokemon: '',
   durationMin: 60,
   expenses: 0,
+  extraExpenses: 0,
   drops: [],
   supplies: [],
   notes: '',
@@ -68,6 +69,7 @@ export default function HuntForm() {
       characterId: hunt.characterId || null,
       durationMin: Number(hunt.durationMin) || 0,
       expenses: Number(hunt.expenses) || 0,
+      extraExpenses: Number(hunt.extraExpenses) || 0,
     })
     navigate(`/hunts/${savedId}`)
   }
@@ -105,15 +107,19 @@ export default function HuntForm() {
           </label>
           {hasSupplies ? (
             <label>
-              Gastos (calculado dos supplies)
+              Gastos com supplies (calculado)
               <span className="value">{formatMoney(suppliesTotal(hunt.supplies))}</span>
             </label>
           ) : (
             <label>
-              Gastos (sem supplies detalhados)
+              Gastos com supplies (sem detalhar)
               <input className="input" type="number" min="0" value={hunt.expenses} onChange={set('expenses')} />
             </label>
           )}
+          <label>
+            Gastos extras
+            <input className="input" type="number" min="0" value={hunt.extraExpenses ?? 0} onChange={set('extraExpenses')} />
+          </label>
         </div>
 
         <h2>Drops</h2>

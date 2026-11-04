@@ -44,6 +44,7 @@ export default function HuntDetail() {
       <section className="stats">
         <StatCard label="Loot" value={formatMoney(s.loot)} />
         <StatCard label="Gastos" value={formatMoney(s.expenses)} />
+        {s.extraExpenses > 0 && <StatCard label="Gastos extras (incluídos)" value={formatMoney(s.extraExpenses)} />}
         <StatCard label="Lucro" value={formatMoney(s.profit)} tone={s.profit >= 0 ? 'pos' : 'neg'} />
         <StatCard label="Lucro/h" value={formatMoney(s.profitPerHour)} />
         {hunt.exp > 0 && <StatCard label="EXP" value={hunt.exp.toLocaleString('pt-BR')} />}

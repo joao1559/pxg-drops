@@ -17,6 +17,7 @@ export default function ImportHunt() {
   const [location, setLocation] = useState('')
   const [notes, setNotes] = useState('')
   const [characterId, setCharacterId] = useState('')
+  const [extraExpenses, setExtraExpenses] = useState(0)
 
   const findCharacter = (name) =>
     characters.find((c) => c.name.trim().toLowerCase() === (name ?? '').trim().toLowerCase())
@@ -53,7 +54,8 @@ export default function ImportHunt() {
 
   const loot = h ? h.drops.reduce((s, d) => s + d.qty * priceOf(d), 0) : 0
   // supplies novos ainda não estão no catálogo: suppliesTotal usa o preço do analyser para eles
-  const expenses = h ? (h.supplies.length ? suppliesTotal(h.supplies) : h.expenses) : 0
+  const suppliesCost = h ? (h.supplies.length ? suppliesTotal(h.supplies) : h.expenses) : 0
+  const expenses = suppliesCost + (Number(extraExpenses) || 0)
   const profit = loot - expenses
   const hours = (h?.durationMin ?? 0) / 60
 
@@ -61,7 +63,7 @@ export default function ImportHunt() {
     e.preventDefault()
     result.newItems.forEach(saveItem)
     result.newSupplies.forEach(saveSupply)
-    const id = saveHunt({ ...h, location: location.trim(), notes, characterId: characterId || null })
+    const id = saveHunt({ ...h, location: location.trim(), notes, characterId: characterId || null, extraExpenses: Number(extraExpenses) || 0 })
     navigate(`/hunts/${id}`)
   }
 
@@ -128,6 +130,10 @@ export default function ImportHunt() {
                   </button>
                 )}
               </label>
+              <label>
+                Gastos extras
+                <input className="input" type="number" min="0" value={extraExpenses} onChange={(e) => setExtraExpenses(e.target.value)} />
+              </label>
               <label>Início<span className="value">{h.startedAt ?? formatDate(h.date)}</span></label>
               <label>Duração<span className="value">{formatDuration(h.durationMin)}</span></label>
               {h.player && <label>Jogador<span className="value">{h.player}</span></label>}
@@ -140,7 +146,8 @@ export default function ImportHunt() {
 
           <section className="stats">
             <StatCard label="Loot" value={formatMoney(loot)} />
-            <StatCard label="Supplies" value={formatMoney(expenses)} />
+            <StatCard label="Supplies" value={formatMoney(suppliesCost)} />
+            {Number(extraExpenses) > 0 && <StatCard label="Gastos extras" value={formatMoney(extraExpenses)} />}
             <StatCard label="Lucro" value={formatMoney(profit)} tone={profit >= 0 ? 'pos' : 'neg'} />
             <StatCard label="Lucro/h" value={formatMoney(hours ? profit / hours : 0)} />
             {h.exp > 0 && <StatCard label="EXP" value={h.exp.toLocaleString('pt-BR')} />}
